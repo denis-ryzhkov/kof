@@ -1,4 +1,6 @@
 global:
+  # CI test
+  ciTest: 2
   # -- Name of the label identifying where the time series data points come from.
   clusterLabel: cluster
   # -- Value of clusterName usually identical to cluster used in some subcharts (e.g. otel)
