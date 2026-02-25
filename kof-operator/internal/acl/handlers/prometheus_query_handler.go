@@ -26,7 +26,7 @@ const (
 	// Match parameter name used in series and labels endpoints.
 	PrometheusMatchParamName = "match[]"
 
-	TenantLabelName = "tenantId"
+	TenantLabelName = "tenant"
 
 	// DummyMatchSelector is used when match[] parameter is missing.
 	// The prom-label-proxy requires a valid PromQL selector to inject tenant labels.
