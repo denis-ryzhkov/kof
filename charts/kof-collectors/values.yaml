@@ -1591,6 +1591,15 @@ opentelemetry-kube-stack:
 opencost:
   enabled: true
   opencost:
+    customPricing:
+      costModel:
+        # Workaround to silence `Error getting LoadBalancer cost: strconv.ParseFloat: parsing "": invalid syntax`
+        # required even with default `opencost.customPricing.enabled: false`
+        # https://github.com/opencost/opencost/issues/3010
+        # https://github.com/opencost/opencost/issues/2925#issuecomment-2705033852
+        LBIngressDataCost: "0.0"
+        FirstFiveForwardingRulesCost: "0.0"
+        AdditionalForwardingRuleCost: "0.0"
     prometheus:
       existingSecretName: storage-vmuser-credentials
       username_key: username
