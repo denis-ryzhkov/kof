@@ -1,3 +1,6 @@
+SHELL := /bin/bash
+.SHELLFLAGS := -euo pipefail -c
+
 LOCALBIN ?= $(shell pwd)/bin
 export LOCALBIN
 $(LOCALBIN):
@@ -167,7 +170,7 @@ set-charts-version: ## Set KOF charts version, e.g. `make set-charts-version V=1
 	done
 	$(YQ) -i '.opentelemetry-kube-stack.collectors.daemon.image.tag = "v$(V)"' $(TEMPLATES_DIR)/kof-collectors/values.yaml
 	@if [[ -n "$(LATEST_V)" ]]; then \
-		file=charts/kof/values-local-cloud.yaml; \
+		file=$(TEMPLATES_DIR)/kof/values-local-cloud.yaml; \
 		echo "Updating $$file with latest v$(LATEST_V)"; \
 		$(YQ) -i '.kof-regional.values.collectors.opentelemetry-kube-stack.collectors.daemon.image.tag = "v$(LATEST_V)"' "$$file"; \
 		$(YQ) -i '.kof-child.values.collectors.opentelemetry-kube-stack.collectors.daemon.image.tag = "v$(LATEST_V)"' "$$file"; \

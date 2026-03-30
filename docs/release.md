@@ -110,4 +110,4 @@
   * If you're creating the PR:
     * Then `git push origin kof-1-9-0`
     * Else `git push upstream main`
-* Delete the outdated RC-s (not the final releases) from the [GitHub releases page](https://github.com/k0rdent/kof/releases).
+* Delete the outdated RCs (not the final releases) from the [GitHub releases page](https://github.com/k0rdent/kof/releases).
