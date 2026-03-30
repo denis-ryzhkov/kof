@@ -39,6 +39,7 @@ REGIONAL_CLUSTER_NAME = $(USER)-$(CLOUD_CLUSTER_TEMPLATE)-regional
 REGIONAL_DOMAIN = $(REGIONAL_CLUSTER_NAME).$(KOF_DNS)
 
 KIND_CLUSTER_NAME ?= kcm-dev
+KOF_VALUES ?= kof/values-local.yaml
 KOF_VERSION=$(shell $(YQ) .version $(TEMPLATES_DIR)/kof/Chart.yaml)
 
 define set_local_registry
@@ -88,7 +89,6 @@ package-chart-%: lint-chart-%
 
 .PHONY: kcm-dev-apply
 kcm-dev-apply: dev cli-install kind-deploy
-	$(YQ) eval -i '.resources.limits.memory = "512Mi"' $(KCM_REPO_PATH)/config/dev/kcm_values.yaml
 	make -C $(KCM_REPO_PATH) dev-apply
 	$(KUBECTL) wait --for create mgmt/kcm --timeout=1m
 	$(KUBECTL) wait --for=condition=Ready mgmt/kcm --timeout=10m
@@ -237,7 +237,7 @@ dev-deploy: dev kof-namespace ## Deploy KOF umbrella chart with local developmen
 		echo "Building kof-operator docker image..."; \
 		$(MAKE) kof-operator-docker-build; \
 	fi
-	cp -f $(TEMPLATES_DIR)/kof/values-local.yaml dev/values-local.yaml
+	cp -f $(TEMPLATES_DIR)/$(KOF_VALUES) dev/values-local.yaml
 	@if $(KUBECTL) get namespace -l istio-injection=true | grep -q 'kof'; then \
 		echo "⚠️ Istio enabled, disable cert-manager installation"; \
 		$(YQ) eval -i '.kof-mothership.values.cert-manager-service-template.enabled = false' dev/values-local.yaml; \

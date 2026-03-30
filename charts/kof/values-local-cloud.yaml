@@ -131,26 +131,26 @@ kof-mothership:
     kube-state-metrics:
       enabled: true
 
+# KOF Child - MultiClusterService template for child clusters
+kof-child:
+  values:
+    collectors:
+      opentelemetry-kube-stack:
+        collectors:
+          daemon:
+            image:
+              tag: v1.8.0
+
 # KOF Regional - MultiClusterService template for regional clusters
 kof-regional:
   values:
-    cert-manager:
-      cluster-issuer:
-        provider: self-signed
     collectors:
       opentelemetry-kube-stack:
-        defaultCRConfig:
-          env:
-            - name: PKI_PATH
-              value: etc/kubernetes
+        collectors:
+          daemon:
+            image:
+              tag: v1.8.0
     storage:
-      cert-manager:
-        cluster-issuer:
-          provider: self-signed
-          name: selfsigned
-      gateway:
-        annotations:
-          cert-manager.io/cluster-issuer: selfsigned
       victoriametrics:
         vmcluster:
           spec:
@@ -172,7 +172,7 @@ kof-regional:
 
 # Enable local storage components
 kof-storage:
-  enabled: true
+  enabled: false
   values:
     victoria-metrics-operator:
       enabled: false
@@ -219,7 +219,7 @@ kof-storage:
 
 # Enable collectors for local deployment
 kof-collectors:
-  enabled: true
+  enabled: false
   values:
     collectors:
       enabled: true
