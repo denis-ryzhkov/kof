@@ -1,3 +1,6 @@
+SHELL := /bin/bash
+.SHELLFLAGS := -euo pipefail -c
+
 LOCALBIN ?= $(shell pwd)/bin
 export LOCALBIN
 $(LOCALBIN):
@@ -157,7 +160,7 @@ squid-deploy: dev
 	fi
 
 .PHONY: set-charts-version
-set-charts-version: ## Set KOF charts version, e.g. `make set-charts-version V=1.2.3`
+set-charts-version: ## Set KOF charts version, e.g. `make set-charts-version V=1.5.0-rc0` with optional `LATEST_V=1.4.0` for cloud only.
 	@echo "Updating KOF charts version from $(KOF_VERSION) to $(V)"; \
 	for file in $(TEMPLATES_DIR)/*/Chart.yaml; do \
 		echo "$$file"; \
@@ -166,6 +169,12 @@ set-charts-version: ## Set KOF charts version, e.g. `make set-charts-version V=1
 		$(YQ) -i '(.dependencies[] | select(.name == "kof-dashboards") | .version) = "$(V)"' "$$file"; \
 	done
 	$(YQ) -i '.opentelemetry-kube-stack.collectors.daemon.image.tag = "v$(V)"' $(TEMPLATES_DIR)/kof-collectors/values.yaml
+	@if [[ -n "$(LATEST_V)" ]]; then \
+		file=$(TEMPLATES_DIR)/kof/values-local-cloud.yaml; \
+		echo "Updating $$file with latest v$(LATEST_V)"; \
+		$(YQ) -i '.kof-regional.values.collectors.opentelemetry-kube-stack.collectors.daemon.image.tag = "v$(LATEST_V)"' "$$file"; \
+		$(YQ) -i '.kof-child.values.collectors.opentelemetry-kube-stack.collectors.daemon.image.tag = "v$(LATEST_V)"' "$$file"; \
+	fi
 	make helm-push
 
 .PHONY: helm-package
