@@ -38,17 +38,19 @@ istio:
 # -- Config of `ServiceTemplate` to use `cert-manager` in `MultiClusterService`.
 cert-manager-service-template:
   repo:
-    name: cert-manager
-    url: https://charts.jetstack.io
-  chart: cert-manager:1.19.3
+    spec:
+      name: cert-manager
+      url: https://charts.jetstack.io
+  chart: cert-manager:v1.19.3
   namespace: kcm-system
   enabled: true
 
 # -- Config of `ServiceTemplate` to use `ingress-nginx` in `MultiClusterService`.
 ingress-nginx-service-template:
   repo:
-    name: ingress-nginx
-    url: https://kubernetes.github.io/ingress-nginx
+    spec:
+      name: ingress-nginx
+      url: https://kubernetes.github.io/ingress-nginx
   chart: ingress-nginx:4.14.3
   namespace: kcm-system
 
