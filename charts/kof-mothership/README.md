@@ -20,7 +20,7 @@ KOF Helm chart for KOF Management cluster
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| cert-manager-service-template | object | `{"chart":"cert-manager:v1.19.3",`<br>`"enabled":true,`<br>`"namespace":"kcm-system",`<br>`"repo":{"spec":{"name":"cert-manager",`<br>`"url":"https://charts.jetstack.io"}}}` | Config of `ServiceTemplate` to use `cert-manager` in `MultiClusterService`. |
+| cert-manager-service-template | object | `{"chart":"cert-manager:v1.19.3",`<br>`"enabled":true,`<br>`"namespace":"kcm-system",`<br>`"repo":{"name":"cert-manager",`<br>`"spec":{"type":"default",`<br>`"url":"https://charts.jetstack.io"}}}` | Config of `ServiceTemplate` to use `cert-manager` in `MultiClusterService`. |
 | cert-manager<br>.cluster-issuer<br>.create | bool | `false` | Whether to create a default clusterissuer |
 | cert-manager<br>.cluster-issuer<br>.provider | string | `"letsencrypt"` | Default clusterissuer provider |
 | cert-manager<br>.email | string | `"mail@example.net"` | If we use letsencrypt (or similar) which email to use |
@@ -72,7 +72,7 @@ KOF Helm chart for KOF Management cluster
 | grafana<br>.security<br>.create_secret | bool | `true` | Enables auto-creation of Grafana username/password. |
 | grafana<br>.security<br>.credentials_secret_name | string | `"grafana-admin-credentials"` | Name of secret for Grafana username/password. |
 | grafana<br>.version | string | `"10.4.18-security-01"` | Version of Grafana to use. |
-| ingress-nginx-service-template | object | `{"chart":"ingress-nginx:4.14.3",`<br>`"namespace":"kcm-system",`<br>`"repo":{"spec":{"name":"ingress-nginx",`<br>`"url":"https://kubernetes.github.io/ingress-nginx"}}}` | Config of `ServiceTemplate` to use `ingress-nginx` in `MultiClusterService`. |
+| ingress-nginx-service-template | object | `{"chart":"ingress-nginx:4.14.3",`<br>`"namespace":"kcm-system",`<br>`"repo":{"name":"ingress-nginx",`<br>`"spec":{"type":"default",`<br>`"url":"https://kubernetes.github.io/ingress-nginx"}}}` | Config of `ServiceTemplate` to use `ingress-nginx` in `MultiClusterService`. |
 | istio<br>.enabled | bool | `true` | Installs resources required for the KOF to work properly with the main Istio chart. |
 | kcm<br>.installTemplates | bool | `true` | Installs `ServiceTemplates` to use charts like `kof-storage` in `MultiClusterService`. |
 | kcm<br>.kof<br>.acl<br>.developmentMode | bool | `false` | Enables development mode. Disables token verification and bypasses authentication, granting admin access to the ACL server. |
