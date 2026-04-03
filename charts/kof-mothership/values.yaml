@@ -39,8 +39,9 @@ istio:
 cert-manager-service-template:
   repo:
     name: cert-manager
-    url: https://charts.jetstack.io
-  chart: cert-manager:1.19.3
+    spec:
+      url: oci://quay.io/jetstack/charts
+  chart: cert-manager:v1.19.3
   namespace: kcm-system
   enabled: true
 
@@ -48,7 +49,9 @@ cert-manager-service-template:
 ingress-nginx-service-template:
   repo:
     name: ingress-nginx
-    url: https://kubernetes.github.io/ingress-nginx
+    spec:
+      type: default
+      url: https://kubernetes.github.io/ingress-nginx
   chart: ingress-nginx:4.14.3
   namespace: kcm-system
 
