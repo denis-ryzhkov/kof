@@ -1,6 +1,6 @@
 {{- $global := .Values.global | default dict }}
-{{- $globalValues := .Values.globalValues | fromYaml }}
-{{- $customRegistry := or $global.registry $globalValues.registry "" }}
+{{- $globalGlobal := dict "global" $global }}
+{{- $customRegistry := $global.registry | default "" }}
 
 {{- range $istio := $.Values.istio.enabled | ternary (list true false) (list false) }}
 ---
@@ -82,7 +82,7 @@ spec:
         values: |
           {{`{{ $operatorsValuesFromAnnotation := .Cluster.metadata | dig "annotations" "k0rdent.mirantis.com/kof-operators-values" "{}" | fromYaml }}`}}
           {{`{{`}} $operatorsValuesFromHelm := `{{ $.Values.operators | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
-          {{`{{`}} $globalValuesFromHelm := `{{ $globalValues | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{ mergeOverwrite (dict) $globalValuesFromHelm $operatorsValuesFromHelm $operatorsValuesFromAnnotation | toYaml | nindent 4 }}`}}
 
       - name: kof-collectors
@@ -243,7 +243,7 @@ spec:
           {{- if $istio }} | replace "{regionalClusterName}" $regionalClusterName
           {{- else }} | replace "{tracesEndpoint}" $tracesEndpoint | replace "{logsEndpoint}" $logsEndpoint | replace "{writeMetricsEndpoint}" $writeMetricsEndpoint | replace "{readMetricsEndpoint}" $readMetricsEndpoint | replace "{vmuserSecretVersion}" $vmuserSecretVersion
           {{- end }} | fromYaml {{`}}`}}
-          {{`{{`}} $globalValuesFromHelm := `{{ $globalValues | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{ $mergedValues := mergeOverwrite (dict) $globalValuesFromHelm $collectorsValuesHere $collectorsValuesFromHelm $collectorsValuesFromAnnotation }}`}}
           {{`{{ `}} $defaultCRConfigEnv := `
           env:
