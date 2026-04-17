@@ -10,7 +10,7 @@ set -euo pipefail
 # * SUPPORT_BUNDLE_OUTPUT - default: `support-bundle-{timestamp}.tar.gz`
 
 sb="${SUPPORT_BUNDLE_CLI:-kubectl-support_bundle}"
-which "$sb" || {
+command -v "$sb" || {
   echo "$sb is not found."
   echo 'Please run `make support-bundle` or install this plugin first:'
   echo 'https://docs.replicated.com/vendor/support-bundle-generating#prerequisite-install-the-support-bundle-plugin'
