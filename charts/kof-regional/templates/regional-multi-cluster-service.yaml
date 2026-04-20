@@ -112,9 +112,19 @@ spec:
           wait: true
         values: |
           {{`{{`}} $envoyGatewayValuesFromAnnotation := .Cluster.metadata | dig "annotations" "k0rdent.mirantis.com/kof-envoy-gateway-values" "{}" | fromYaml {{`}}`}}
+          {{`{{`}} $envoyGatewayValuesHere := `
+          config:
+            envoyGateway:
+              envoyProxy:
+                provider:
+                  type: Kubernetes
+                  kubernetes:
+                    envoyService:
+                      name: gateway-{clusterName}
+          ` | replace "{clusterName}" .Cluster.metadata.name | fromYaml {{`}}`}}
           {{`{{`}} $envoyGatewayValuesFromHelm := `{{ index $.Values "envoy-gateway" "values" | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
-          {{`{{`}} mergeOverwrite (dict) $globalValuesFromHelm $envoyGatewayValuesFromHelm $envoyGatewayValuesFromAnnotation | toYaml | nindent 4 {{`}}`}}
+          {{`{{`}} mergeOverwrite (dict) $globalValuesFromHelm $envoyGatewayValuesFromHelm $envoyGatewayValuesHere $envoyGatewayValuesFromAnnotation | toYaml | nindent 4 {{`}}`}}
       {{- end }}
 
       {{- $dependsOnList := list }}
