@@ -488,12 +488,13 @@ cli-install: yq helm kind ## Install the necessary CLI tools for deployment, dev
 
 .PHONY: support-bundle
 support-bundle: SUPPORT_BUNDLE_OUTPUT=$(CURDIR)/support-bundle-$(shell date +"%Y-%m-%dT%H_%M_%S")
-support-bundle: envsubst support-bundle-cli
-	@if [ -n "$(KUBECTL_CONTEXT)" ]; then \
-		NAMESPACE=$(NAMESPACE) $(ENVSUBST) -no-unset -i config/support-bundle.yaml | $(SUPPORT_BUNDLE_CLI) -o $(SUPPORT_BUNDLE_OUTPUT) --context $(KUBECTL_CONTEXT) --debug - ; \
-	else \
-		NAMESPACE=$(NAMESPACE) $(ENVSUBST) -no-unset -i config/support-bundle.yaml | $(SUPPORT_BUNDLE_CLI) -o $(SUPPORT_BUNDLE_OUTPUT) --debug - ; \
-	fi
+support-bundle: support-bundle-cli ## Create and analyze support bundle given optional `KUBECTL_CONTEXT`.
+	@KUBECTL="$(KUBECTL)" \
+	KUBECTL_CONTEXT="$(KUBECTL_CONTEXT)" \
+	SUPPORT_BUNDLE_CLI="$(SUPPORT_BUNDLE_CLI)" \
+	SUPPORT_BUNDLE_OUTPUT="$(SUPPORT_BUNDLE_OUTPUT)" \
+	scripts/create-support-bundle.sh
+
 	@archive=""; \
 	if [ -f "$(SUPPORT_BUNDLE_OUTPUT).tar.gz" ]; then archive="$(SUPPORT_BUNDLE_OUTPUT).tar.gz"; \
 	elif [ -f "$(SUPPORT_BUNDLE_OUTPUT)" ]; then archive="$(SUPPORT_BUNDLE_OUTPUT)"; \
