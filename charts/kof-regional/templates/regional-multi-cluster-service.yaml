@@ -162,7 +162,7 @@ spec:
         values: |
           {{`{{ $vmoValuesFromAnnotation := .Cluster.metadata | dig "annotations" "k0rdent.mirantis.com/kof-victoria-metrics-operator-values" "{}" | fromYaml }}`}}
           {{`{{`}} $vmoValuesFromHelm := `{{ index $.Values "victoria-metrics-operator" "values" | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
-          {{`{{`}} $globalValuesFromHelm := `{{ $globalValues | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{ mergeOverwrite (dict) $globalValuesFromHelm $vmoValuesFromHelm $vmoValuesFromAnnotation | toYaml | nindent 4 }}`}}
 
       - name: kof-storage
