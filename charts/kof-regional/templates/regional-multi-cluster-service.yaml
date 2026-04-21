@@ -1,6 +1,6 @@
 {{- $global := .Values.global | default dict }}
-{{- $globalValues := .Values.globalValues | fromYaml }}
-{{- $customRegistry := or $global.registry $globalValues.registry "" }}
+{{- $globalGlobal := dict "global" $global }}
+{{- $customRegistry := $global.registry | default "" }}
 
 {{- range $istio := $.Values.istio.enabled | ternary (list true false) (list false) }}
 {{- $gatewayEnabled := and (not $istio) (index $.Values "envoy-gateway" "enabled") }}
@@ -81,7 +81,7 @@ spec:
           wait: true
         values: |
           {{`{{`}} $ingressNginxValuesFromAnnotation := .Cluster.metadata | dig "annotations" "k0rdent.mirantis.com/kof-ingress-nginx-values" "{}" | fromYaml {{`}}`}}
-          {{`{{`}} $ingressNginxValuesFromHelm := `{{ index $.Values "ingress-nginx" | toYaml | nindent 12 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $ingressNginxValuesFromHelm := `{{ index $.Values "ingress-nginx" "values" | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{`}} $ingressNginxValuesHere := `
           controller:
             image:
@@ -100,7 +100,7 @@ spec:
           ` | fromYaml {{`}}`}}
           {{`{{`}} $ingressNginxValuesHere = mergeOverwrite $ingressNginxValuesHere $ingressNginxValuesAzure {{`}}`}}
           {{`{{ end }}`}}
-          {{`{{`}} $globalValuesFromHelm := `{{ $globalValues | toYaml | nindent 12 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{`}} mergeOverwrite (dict) $globalValuesFromHelm $ingressNginxValuesHere $ingressNginxValuesFromHelm $ingressNginxValuesFromAnnotation | toYaml | nindent 4 {{`}}`}}
       {{- end }}
 
@@ -111,11 +111,20 @@ spec:
         helmOptions:
           wait: true
         values: |
-          envoy-gateway:
-            {{`{{`}} $envoyGatewayValuesFromAnnotation := .Cluster.metadata | dig "annotations" "k0rdent.mirantis.com/kof-envoy-gateway-values" "{}" | fromYaml {{`}}`}}
-            {{`{{`}} $envoyGatewayValuesFromHelm := `{{ index $.Values "envoy-gateway" | toYaml | nindent 12 }}` | fromYaml {{`}}`}}
-            {{`{{`}} $globalValuesFromHelm := `{{ $globalValues | toYaml | nindent 12 }}` | fromYaml {{`}}`}}
-            {{`{{`}} mergeOverwrite (dict) $globalValuesFromHelm $envoyGatewayValuesFromHelm $envoyGatewayValuesFromAnnotation | toYaml | nindent 4 {{`}}`}}
+          {{`{{`}} $envoyGatewayValuesFromAnnotation := .Cluster.metadata | dig "annotations" "k0rdent.mirantis.com/kof-envoy-gateway-values" "{}" | fromYaml {{`}}`}}
+          {{`{{`}} $envoyGatewayValuesHere := `
+          config:
+            envoyGateway:
+              envoyProxy:
+                provider:
+                  type: Kubernetes
+                  kubernetes:
+                    envoyService:
+                      name: gateway-{clusterName}
+          ` | replace "{clusterName}" .Cluster.metadata.name | fromYaml {{`}}`}}
+          {{`{{`}} $envoyGatewayValuesFromHelm := `{{ index $.Values "envoy-gateway" "values" | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} mergeOverwrite (dict) $globalValuesFromHelm $envoyGatewayValuesFromHelm $envoyGatewayValuesHere $envoyGatewayValuesFromAnnotation | toYaml | nindent 4 {{`}}`}}
       {{- end }}
 
       {{- $dependsOnList := list }}
@@ -139,7 +148,7 @@ spec:
         values: |
           {{`{{ $operatorsValuesFromAnnotation := .Cluster.metadata | dig "annotations" "k0rdent.mirantis.com/kof-operators-values" "{}" | fromYaml }}`}}
           {{`{{`}} $operatorsValuesFromHelm := `{{ $.Values.operators | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
-          {{`{{`}} $globalValuesFromHelm := `{{ $globalValues | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{ mergeOverwrite (dict) $globalValuesFromHelm $operatorsValuesFromHelm $operatorsValuesFromAnnotation | toYaml | nindent 4 }}`}}
 
       - name: victoria-metrics-operator
@@ -322,7 +331,7 @@ spec:
             | replace "{metricsHost}" $metricsHost | replace "{gatewayName}" $gatewayName | replace "{gatewayNamespace}" $gatewayNamespace | replace "{grafanaHost}" $grafanaHost | replace "{certEmail}" $certEmail | replace "{dexIssuer}" $dexIssuer | replace "{dexHost}" $dexHost | replace "{vmuserSecretVersion}" $vmuserSecretVersion | replace "{regionalDomain}" $regionalDomain
           {{- end }}
             | fromYaml {{`}}`}}
-          {{`{{`}} $globalValuesFromHelm := `{{ $globalValues | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{ mergeOverwrite (dict) $globalValuesFromHelm $storageValuesHere $storageValuesFromHelm $storageValuesFromAnnotation | toYaml | nindent 4 }}`}}
         valuesFrom:
           - kind: ConfigMap
@@ -396,7 +405,7 @@ spec:
                   EMIT_KSM_V1_METRICS_ONLY: "true"
           ` | replace "{clusterName}" .Cluster.metadata.name | replace "{clusterNamespace}" .Cluster.metadata.namespace
             | replace "{vmuserSecretVersion}" $vmuserSecretVersion | fromYaml {{`}}`}}
-          {{`{{`}} $globalValuesFromHelm := `{{ $globalValues | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
           {{`{{ mergeOverwrite (dict) $globalValuesFromHelm $collectorsValuesHere $collectorsValuesFromHelm $collectorsValuesFromAnnotation | toYaml | nindent 4 }}`}}
     templateResourceRefs:
     - identifier: RegionalKCMCluster
