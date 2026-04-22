@@ -92,7 +92,7 @@ spec:
                   digest: ""
           ` | fromYaml {{`}}`}}
           {{`{{`}} if eq (get .InfrastructureProvider "kind") "AzureCluster" {{`}}`}}
-          {{`{{`}} $ingressNginxValuesAzure = `
+          {{`{{`}} $ingressNginxValuesAzure := `
           controller:
             service:
               annotations:
