@@ -24,4 +24,4 @@ dependencies:
   repository: oci://ghcr.io/k0rdent/vlogxy/charts
   version: 0.1.0
 digest: sha256:c7a7dc76ea6ad914386a29dfb839666f941b79360ff831f0f44a1fd2178ccb65
-generated: "2026-04-20T15:50:59.907663114Z"
+generated: "2026-04-22T19:32:28.01267+02:00"

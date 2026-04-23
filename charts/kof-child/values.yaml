@@ -2,9 +2,6 @@ cert-manager:
   enabled: true
   template: cert-manager-v1-19-3
 
-# --set-file globalValues=global-values.yaml
-globalValues: "{}"
-
 collectors:
   resources:
     requests:
