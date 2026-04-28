@@ -16,7 +16,7 @@ dependencies:
   version: 2.0.1
 - name: kof-dashboards
   repository: file://../kof-dashboards/
-  version: 1.9.0
+  version: 1.10.0-rc0
 - name: metrics-server
   repository: https://kubernetes-sigs.github.io/metrics-server/
   version: 3.13.0
@@ -26,8 +26,5 @@ dependencies:
 - name: external-dns
   repository: https://kubernetes-sigs.github.io/external-dns/
   version: 1.20.0
-- name: gateway-helm
-  repository: oci://docker.io/envoyproxy
-  version: v1.7.2
-digest: sha256:3db9d093b468572e4f71dff0d607a65c8f2b7115cb524ed5554de42f82d2e581
-generated: "2026-04-28T12:24:40.613082+02:00"
+digest: sha256:33013fb37f051bb34be9cadfc7a11c9315044115f58af57cbe1d570e6f50238d
+generated: "2026-04-28T15:17:05.329423+02:00"
