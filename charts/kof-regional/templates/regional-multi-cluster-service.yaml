@@ -162,8 +162,13 @@ spec:
         values: |
           {{`{{ $vmoValuesFromAnnotation := .Cluster.metadata | dig "annotations" "k0rdent.mirantis.com/kof-victoria-metrics-operator-values" "{}" | fromYaml }}`}}
           {{`{{`}} $vmoValuesFromHelm := `{{ index $.Values "victoria-metrics-operator" "values" | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
+          {{`{{`}} $vmoValuesHere := `
+          env:
+            - name: VM_GATEWAY_API_ENABLED
+              value: "{{ $gatewayEnabled }}"
+          ` | fromYaml {{`}}`}}
           {{`{{`}} $globalValuesFromHelm := `{{ $globalGlobal | toYaml | nindent 10 }}` | fromYaml {{`}}`}}
-          {{`{{ mergeOverwrite (dict) $globalValuesFromHelm $vmoValuesFromHelm $vmoValuesFromAnnotation | toYaml | nindent 4 }}`}}
+          {{`{{ mergeOverwrite (dict) $globalValuesFromHelm $vmoValuesHere $vmoValuesFromHelm $vmoValuesFromAnnotation | toYaml | nindent 4 }}`}}
 
       - name: kof-storage
         namespace: {{ $.Release.Namespace }}
