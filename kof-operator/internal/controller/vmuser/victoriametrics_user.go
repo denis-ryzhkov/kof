@@ -45,6 +45,9 @@ type CreateOptions struct {
 type MCSConfig struct {
 	// ClusterSelector determines which clusters receive the VMUser credentials.
 	ClusterSelector metav1.LabelSelector
+	// DependsOn lists dependency identifiers for this MultiClusterService, such as other
+	// MultiClusterService names, and is used to influence dependency/reconciliation ordering.
+	DependsOn []string
 }
 
 type VMUserConfig struct {
@@ -442,6 +445,7 @@ func buildPropagationMCS(opts *CreateOptions) *kcmv1beta1.MultiClusterService {
 		},
 		Spec: kcmv1beta1.MultiClusterServiceSpec{
 			ClusterSelector: opts.MCSConfig.ClusterSelector,
+			DependsOn:       opts.MCSConfig.DependsOn,
 			ServiceSpec: kcmv1beta1.ServiceSpec{
 				Services: []kcmv1beta1.Service{
 					{
@@ -449,12 +453,28 @@ func buildPropagationMCS(opts *CreateOptions) *kcmv1beta1.MultiClusterService {
 						Template:  propagationTemplate,
 						Namespace: opts.Namespace,
 						Values:    "propagation:\n  enabled: true\n  data: |\n{{ removeField \"vmuser\" \"metadata.ownerReferences\" | nindent 14 }}\n",
+						HelmOptions: &kcmv1beta1.ServiceHelmOptions{
+							InstallOptions: &addoncontrollerv1beta1.HelmInstallOptions{
+								TakeOwnership: true,
+							},
+							UpgradeOptions: &addoncontrollerv1beta1.HelmUpgradeOptions{
+								TakeOwnership: true,
+							},
+						},
 					},
 					{
 						Name:      BuildSecretName(opts.Name),
 						Template:  propagationTemplate,
 						Namespace: opts.Namespace,
 						Values:    "propagation:\n  enabled: true\n  data: |\n{{ removeField \"secret\" \"metadata.ownerReferences\" | nindent 14 }}\n",
+						HelmOptions: &kcmv1beta1.ServiceHelmOptions{
+							InstallOptions: &addoncontrollerv1beta1.HelmInstallOptions{
+								TakeOwnership: true,
+							},
+							UpgradeOptions: &addoncontrollerv1beta1.HelmUpgradeOptions{
+								TakeOwnership: true,
+							},
+						},
 					},
 				},
 				TemplateResourceRefs: []addoncontrollerv1beta1.TemplateResourceRef{
