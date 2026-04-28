@@ -29,8 +29,8 @@ github.com/AzureAD/microsoft-authentication-library-for-go v1.6.0/go.mod h1:HKpQ
 github.com/Code-Hex/go-generics-cache v1.5.1 h1:6vhZGc5M7Y/YD8cIUcY8kcuQLB4cHR7U+0KMqAA0KcU=
 github.com/Code-Hex/go-generics-cache v1.5.1/go.mod h1:qxcC9kRVrct9rHeiYpFWSoW1vxyillCVzX13KZG8dl4=
 github.com/DATA-DOG/go-sqlmock v1.4.1/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
-github.com/K0rdent/kcm v1.9.0-rc3 h1:NuZD8y2vfTIUaT9Z9BLuoHjv4/QOQmJAh+m1elqVEwQ=
-github.com/K0rdent/kcm v1.9.0-rc3/go.mod h1:YHggFekId76wcJtGiV0ri7JXHMBHVZLYC0NFVcmZU84=
+github.com/K0rdent/kcm v1.9.0 h1:Kx2iqkBYmCaAimPgrrJDkB1VumhPE67tcB3BRYunsRU=
+github.com/K0rdent/kcm v1.9.0/go.mod h1:YHggFekId76wcJtGiV0ri7JXHMBHVZLYC0NFVcmZU84=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.4.0 h1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=

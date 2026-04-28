@@ -3,7 +3,7 @@ module github.com/k0rdent/kof/kof-operator
 go 1.26.1
 
 require (
-	github.com/K0rdent/kcm v1.9.0-rc3
+	github.com/K0rdent/kcm v1.9.0
 	github.com/VictoriaMetrics/operator/api v0.66.1
 	github.com/coreos/go-oidc/v3 v3.18.0
 	github.com/fluxcd/source-controller/api v1.8.2
